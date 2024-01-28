@@ -6,6 +6,8 @@ from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from .validators import file_url
+
 
 class User(AbstractUser):
     """
@@ -47,7 +49,7 @@ class File(models.Model):
         user (User): User who owns this file.
         write_users (list(User)): Users who can write to this file.
     """
-    url = models.CharField(max_length=255, unique=True)
+    url = models.CharField(max_length=255, unique=True, validators=[file_url])
     file_name = models.CharField(max_length=255)
     user = models.ForeignKey(User, related_name='owned_files', on_delete=models.CASCADE)
     write_users = models.ManyToManyField(User, related_name='write_files')
