@@ -15,5 +15,7 @@ The client project is a [Create React App](https://create-react-app.dev/) that h
 2. `$ npm install` to install the dependencies.
 3. `$ npm start` to start the React development server.
 
+## Entity Relationship Diagram for the models
+![ER Diagram](docs/EntityRelationship.svg)
 ##
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
