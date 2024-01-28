@@ -1,8 +1,11 @@
-from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.files.storage import FileSystemStorage
+from django.db import models
 from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
 
 class User(AbstractUser):
     """
@@ -31,6 +34,42 @@ class User(AbstractUser):
         return reverse("users:detail", kwargs={"pk": self.id})
 
 
+fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+
+
+class File(models.Model):
+    """
+    File model for Propylon Document Manager.
+
+    Attributes:
+        url (str): URL of the file.
+        file_name (str): Name of the file.
+        user (User): User who owns this file.
+        write_users (list(User)): Users who can write to this file.
+    """
+    url = models.CharField(max_length=255, unique=True)
+    file_name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, related_name='owned_files', on_delete=models.CASCADE)
+    write_users = models.ManyToManyField(User, related_name='write_files')
+
+
 class FileVersion(models.Model):
-    file_name = models.fields.CharField(max_length=512)
-    version_number = models.fields.IntegerField()
+    """
+    File version model for Propylon Document Manager.
+
+    Attributes:
+        file (File): File that this version belongs to.
+        version (int): Version number of this file.
+        content (FileField): File content.
+        hash (str): Hash of the file, used to check if the file is corrupt.
+        uploaded_at (datetime): Datetime when the file was uploaded.
+        user (User): User who uploaded this file.
+        read_users (list(User)): Users who can read this file.
+    """
+    file = models.ForeignKey(File, related_name='versions', on_delete=models.CASCADE)
+    version = models.IntegerField()
+    content = models.FileField(storage=fs)
+    hash = models.CharField(max_length=255, unique=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    read_users = models.ManyToManyField(User, related_name='read_file_versions')
