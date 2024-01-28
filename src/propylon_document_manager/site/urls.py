@@ -5,6 +5,7 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
+from propylon_document_manager.file_versions.api.views import SignUpView
 
 # API URLS
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
     # DRF auth token
     path("api-auth/", include("rest_framework.urls")),
     path("auth-token/", obtain_auth_token),
+    path('signup/', SignUpView.as_view(), name='signup'),
 ]
 
 if settings.DEBUG:
