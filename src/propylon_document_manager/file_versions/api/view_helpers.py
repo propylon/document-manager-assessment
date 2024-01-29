@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import status
 from rest_framework.response import Response
 
-from .api.serializers import FileVersionSerializer
-from .models import File, FileVersion
+from ..models import File, FileVersion
+from .serializers import FileVersionSerializer
 
 
 @login_required
