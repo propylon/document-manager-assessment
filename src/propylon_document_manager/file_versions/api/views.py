@@ -1,14 +1,36 @@
-from django.shortcuts import render
+from django.contrib.auth import get_user_model
+from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
 
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
-from rest_framework.viewsets import GenericViewSet
+from .serializers import UserSerializer
+from .view_helpers import delete_file, delete_file_version, get_file, upload_file
 
-from ..models import FileVersion
-from .serializers import FileVersionSerializer
 
-class FileVersionViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
-    authentication_classes = []
-    permission_classes = []
-    serializer_class = FileVersionSerializer
-    queryset = FileVersion.objects.all()
-    lookup_field = "id"
+class UserViewSet(ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class FileView(APIView):
+    """
+    API endpoint that allows files to be viewed or edited.
+    """
+    def get(self, request, file_url, format=None):
+        version = request.query_params.get("version")
+        return get_file(request, file_url, version)
+
+    def post(self, request, file_url, format=None):
+        return upload_file(request, file_url)
+
+    def delete(self, request, file_url, format=None):
+        version = request.query_params.get("version")
+
+        if version:
+            return delete_file_version(request, file_url, version)
+
+        return delete_file(request, file_url)

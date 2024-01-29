@@ -20,7 +20,7 @@ def file_url(file_path: str):
     """
     pattern = r'^/[\w-]+(/[\w-]+)*\.\w+$'
     message = (
-        '''Invalid file URL, please try again.''' \
+        '''Invalid file URL, please try again.'''
         '''It must start with \'/\' and end with file name and its extension (any)'''
     )
     if not re.match(pattern, file_path):
