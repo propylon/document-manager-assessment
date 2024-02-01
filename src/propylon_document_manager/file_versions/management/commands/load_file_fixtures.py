@@ -8,6 +8,7 @@ file_versions = [
     'statute_document',
 ]
 
+
 class Command(BaseCommand):
     help = "Load basic file version fixtures"
 

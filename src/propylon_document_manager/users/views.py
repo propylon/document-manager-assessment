@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import login, logout
 from rest_framework import permissions, status
 from rest_framework.authentication import SessionAuthentication
@@ -12,7 +14,8 @@ class UserRegister(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
-        clean_data = custom_validation(request.data)
+        data = json.loads(request.body)
+        clean_data = custom_validation(data)
         serializer = UserRegisterSerializer(data=clean_data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.create(clean_data)
@@ -26,13 +29,13 @@ class UserLogin(APIView):
     authentication_classes = (SessionAuthentication,)
 
     def post(self, request):
-        data = request.data
+        data = json.loads(request.body)
         assert validate_email(data)
         assert validate_password(data)
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.check_user(data)
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 

@@ -1,0 +1,1 @@
+export const LOGIN_API_ENDPOINT = process.env.REACT_APP_LOGIN_API_ENDPOINT || "http://localhost:8001/login/";

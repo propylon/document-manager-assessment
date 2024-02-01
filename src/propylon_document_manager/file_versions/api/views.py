@@ -1,19 +1,6 @@
-from django.contrib.auth import get_user_model
-from rest_framework import permissions
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 
-from .serializers import UserSerializer
 from .view_helpers import delete_file, delete_file_version, get_file, upload_file
-
-
-class UserViewSet(ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class FileView(APIView):

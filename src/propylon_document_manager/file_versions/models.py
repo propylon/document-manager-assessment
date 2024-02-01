@@ -1,42 +1,12 @@
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
 from django.core.files.storage import FileSystemStorage
 from django.db import models
-from django.db.models import CharField, EmailField
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 
 from .validators import file_url
 
-
-class User(AbstractUser):
-    """
-    Default custom user model for Propylon Document Manager.
-    If adding fields that need to be filled at user signup,
-    check forms.SignupForm and forms.SocialSignupForms accordingly.
-    """
-
-    # First and last name do not cover name patterns around the globe
-    name = CharField(_("Name of User"), blank=True, max_length=255)
-    first_name = None  # type: ignore
-    last_name = None  # type: ignore
-    email = EmailField(_("email address"), unique=True)
-    username = None  # type: ignore
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
-
-    def get_absolute_url(self) -> str:
-        """Get URL for user's detail view.
-
-        Returns:
-            str: URL for user detail.
-
-        """
-        return reverse("users:detail", kwargs={"pk": self.id})
-
-
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+UserModel = get_user_model()
 
 
 class File(models.Model):
@@ -51,8 +21,8 @@ class File(models.Model):
     """
     url = models.CharField(max_length=255, unique=True, validators=[file_url])
     file_name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, related_name='owned_files', on_delete=models.CASCADE)
-    write_users = models.ManyToManyField(User, related_name='write_files')
+    user = models.ForeignKey(UserModel, related_name='owned_files', on_delete=models.CASCADE)
+    write_users = models.ManyToManyField(UserModel, related_name='write_files')
 
 
 class FileVersion(models.Model):
@@ -73,5 +43,5 @@ class FileVersion(models.Model):
     content = models.FileField(storage=fs)
     hash = models.CharField(max_length=255, unique=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    read_users = models.ManyToManyField(User, related_name='read_file_versions')
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    read_users = models.ManyToManyField(UserModel, related_name='read_file_versions')
