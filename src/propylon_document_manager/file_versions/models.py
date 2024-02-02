@@ -6,7 +6,7 @@ from django.db import models
 from .validators import file_url
 
 fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-UserModel = get_user_model()
+User = get_user_model()
 
 
 class File(models.Model):
@@ -21,8 +21,8 @@ class File(models.Model):
     """
     url = models.CharField(max_length=255, unique=True, validators=[file_url])
     file_name = models.CharField(max_length=255)
-    user = models.ForeignKey(UserModel, related_name='owned_files', on_delete=models.CASCADE)
-    write_users = models.ManyToManyField(UserModel, related_name='write_files')
+    user = models.ForeignKey(User, related_name='owned_files', on_delete=models.CASCADE)
+    write_users = models.ManyToManyField(User, related_name='write_files')
 
 
 class FileVersion(models.Model):
@@ -43,5 +43,5 @@ class FileVersion(models.Model):
     content = models.FileField(storage=fs)
     hash = models.CharField(max_length=255, unique=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    read_users = models.ManyToManyField(UserModel, related_name='read_file_versions')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    read_users = models.ManyToManyField(User, related_name='read_file_versions')

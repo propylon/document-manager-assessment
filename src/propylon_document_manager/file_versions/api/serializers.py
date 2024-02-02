@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from propylon_document_manager.users.serializers import UserSerializer
+from propylon_document_manager.users.serializers import UserCreateSerializer
 
 from ..models import File, FileVersion
 
@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class FileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserCreateSerializer(read_only=True)
     write_users = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
 
     class Meta:
@@ -33,7 +33,7 @@ class FileSerializer(serializers.ModelSerializer):
 
 class FileVersionSerializer(serializers.ModelSerializer):
     file = FileSerializer(read_only=True)
-    user = UserSerializer(read_only=True)
+    user = UserCreateSerializer(read_only=True)
     read_users = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
 
     class Meta:
