@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import "./FileVersions.css";
+import axios from "axios";
 
 function FileVersionsList(props) {
   const file_versions = props.file_versions;
@@ -20,13 +21,14 @@ function FileVersions() {
   useEffect(() => {
     // fetch data
     const dataFetch = async () => {
-      const data = await (
-        await fetch("http://localhost:8001/api/file_versions")
-      ).json();
-
-      // set state when the data received
-      setData(data);
+      try {
+        const response = await axios.get("http://localhost:8001/api/file_versions");
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
+    
 
     dataFetch();
   }, []);
