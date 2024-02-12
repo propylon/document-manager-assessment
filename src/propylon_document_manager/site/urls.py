@@ -5,16 +5,19 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
+from propylon_document_manager.file_versions.api.views import LoginAPIView, LogoutAPIView, RegisterAPIView
 
-# API URLS
+
 urlpatterns = [
     # API base url
     path("api/", include("propylon_document_manager.site.api_router")),
     # DRF auth token
     path("api-auth/", include("rest_framework.urls")),
     path("auth-token/", obtain_auth_token),
+    path('login/', LoginAPIView.as_view(), name='login'),
+    path('logout/', LogoutAPIView.as_view(), name='logout'),
+    path('register/', RegisterAPIView.as_view(), name='register'),
 ]
-
 if settings.DEBUG:
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar

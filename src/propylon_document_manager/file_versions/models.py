@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from .manager import CustomUserManager
+
 
 class User(AbstractUser):
     """
@@ -20,6 +22,8 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
 
     def get_absolute_url(self) -> str:
         """Get URL for user's detail view.
