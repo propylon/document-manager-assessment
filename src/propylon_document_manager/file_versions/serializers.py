@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from ..models import FileVersion
+from .models import FileVersion
+
 
 class FileVersionSerializer(serializers.ModelSerializer):
     class Meta:

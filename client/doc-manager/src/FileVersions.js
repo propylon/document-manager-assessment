@@ -21,7 +21,7 @@ function FileVersions() {
     // fetch data
     const dataFetch = async () => {
       const data = await (
-        await fetch("http://localhost:8001/api/file_versions")
+        await fetch("http://localhost:8002/api/file_versions")
       ).json();
 
       // set state when the data received

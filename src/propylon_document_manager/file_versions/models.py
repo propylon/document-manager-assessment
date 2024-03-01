@@ -34,3 +34,15 @@ class User(AbstractUser):
 class FileVersion(models.Model):
     file_name = models.fields.CharField(max_length=512)
     version_number = models.fields.IntegerField()
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="file_versions",
+        blank=True,
+        null=True
+    )
+    collaborators = models.ManyToManyField(
+        User,
+        related_name="collaborators",
+        blank=True
+    )

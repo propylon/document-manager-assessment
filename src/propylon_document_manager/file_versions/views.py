@@ -1,10 +1,10 @@
 from django.shortcuts import render
-
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from ..models import FileVersion
+from .models import FileVersion
 from .serializers import FileVersionSerializer
+
 
 class FileVersionViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     authentication_classes = []

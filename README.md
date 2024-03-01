@@ -7,7 +7,7 @@ The Propylon Document Management Technical Assessment is a simple (and incomplet
 The API project is a [Django/DRF](https://www.django-rest-framework.org/) project that utilizes a [Makefile](https://www.gnu.org/software/make/manual/make.html) for a convenient interface to access development utilities. This application uses [SQLite](https://www.sqlite.org/index.html) as the default persistence database you are more than welcome to change this. This project requires Python 3.11 in order to create the virtual environment.  You will need to ensure that this version of Python is installed on your OS before building the virtual environment.  Running the below commmands should get the development environment running using the Django development server.
 1. `$ make build` to create the virtual environment.
 2. `$ make fixtures` to create a small number of fixture file versions.
-3. `$ make serve` to start the development server on port 8001.
+3. `$ make serve` to start the development server on port 8002.
 4. `$ make test` to run the limited test suite via PyTest.
 ### Client Development 
 The client project is a [Create React App](https://create-react-app.dev/) that has been tested against [Node v18.19.0 Hydrogen LTS](https://nodejs.org/download/release/v18.19.0/).  An [.nvmrc](https://github.com/nvm-sh/nvm#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) file has been included so that the command `$ nvm use` should select the correct NodeJS version through NVM.
