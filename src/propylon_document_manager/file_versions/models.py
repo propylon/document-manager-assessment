@@ -33,10 +33,19 @@ class User(AbstractUser):
 
 
 class FileVersion(models.Model):
-    file_name = models.fields.CharField(max_length=512)
-    version_number = models.fields.IntegerField()
+    file_name = models.CharField(max_length=512)
+    version_number = models.IntegerField(default=1)
     file_field = models.FileField(upload_to="uploads/%Y/%m/%d/")
-    date = models.fields.DateTimeField(auto_now_add=True)
-    url = models.fields.CharField(max_length=512)
+    date = models.DateTimeField(auto_now_add=True)
+    url = models.CharField(max_length=512)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="file_versions", blank=True, null=True)
     collaborators = models.ManyToManyField(User, related_name="collaborators", blank=True)
+
+    def save(self, *args, **kwargs):
+        existing_files = FileVersion.objects.filter(file_name=self.file_name)
+
+        if existing_files.exists():
+            latest_version = existing_files.order_by("-version_number").first()
+            self.version_number = latest_version.version_number + 1
+
+        super().save(*args, **kwargs)
