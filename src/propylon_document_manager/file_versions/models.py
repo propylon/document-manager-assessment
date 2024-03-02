@@ -1,8 +1,9 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
 
 class User(AbstractUser):
     """
@@ -34,15 +35,8 @@ class User(AbstractUser):
 class FileVersion(models.Model):
     file_name = models.fields.CharField(max_length=512)
     version_number = models.fields.IntegerField()
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="file_versions",
-        blank=True,
-        null=True
-    )
-    collaborators = models.ManyToManyField(
-        User,
-        related_name="collaborators",
-        blank=True
-    )
+    file_field = models.FileField(upload_to="uploads/%Y/%m/%d/")
+    date = models.fields.DateTimeField(auto_now_add=True)
+    url = models.fields.CharField(max_length=512)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="file_versions", blank=True, null=True)
+    collaborators = models.ManyToManyField(User, related_name="collaborators", blank=True)
