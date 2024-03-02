@@ -72,7 +72,7 @@ build: build-reqs
 	$(IN_ENV) pip install -e .
 
 plain-serve:
-	$(IN_ENV) django-admin runserver 0.0.0.0:8002
+	$(IN_ENV) django-admin runserver 0.0.0.0:8001
 
 serve: build makemigrations migrate plain-serve
 
