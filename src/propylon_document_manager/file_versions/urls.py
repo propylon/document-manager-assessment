@@ -1,6 +1,10 @@
-from django.urls import path
-from . import views
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    path('', views.FileVersionViewSet.as_view({'get': 'list'}), name='index'),
-]
+from .views import FileVersionSpecificViewSet, FileVersionViewSet
+
+router = DefaultRouter()
+
+router.register("all", FileVersionViewSet, basename="file_version_all")
+router.register("specific", FileVersionSpecificViewSet, basename="file_version_specific")
+
+urlpatterns = [] + router.urls
