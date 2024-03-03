@@ -68,6 +68,7 @@ target/
 .venv
 venv/
 ENV/
+.env
 
 # Rope project settings
 .ropeproject
@@ -279,3 +280,4 @@ propylon_document_manager/media/
 ### DB
 *.sqlite*
 src/propylon_document_manager/media/*
+pg-data
