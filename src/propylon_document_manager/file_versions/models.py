@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import CharField, EmailField
+from django.db.models import CharField, EmailField, Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -41,8 +41,13 @@ class FileVersion(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="file_versions", blank=True, null=True)
     collaborators = models.ManyToManyField(User, related_name="collaborators", blank=True)
 
+    @property
+    def download_url(self):
+        download_url = reverse("file-version-download", kwargs={"pk": self.pk})
+        return download_url
+
     def save(self, *args, **kwargs):
-        existing_files = FileVersion.objects.filter(file_name=self.file_name)
+        existing_files = FileVersion.objects.filter(Q(file_name=self.file_name) | Q(url=self.url))
 
         if existing_files.exists():
             latest_version = existing_files.order_by("-version_number").first()
