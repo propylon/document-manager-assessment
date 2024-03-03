@@ -10,7 +10,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 # API URLS
 urlpatterns = [
     # API base url
-    path("", RedirectView.as_view(url="/home/")),
+    path("", RedirectView.as_view(url="/home/"), name="home"),
     path("api/", include("propylon_document_manager.site.api_router")),
     # DRF auth token
     path(
