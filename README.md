@@ -37,8 +37,16 @@ docker-compose up --build
 ```
 
 There are two containers: one for django and one for postgres.
-The system variables are in the .env file, if you want, you can change them, but they work just fine.
-
+Env file:
+```bash
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=propylon
+DB_USER=eduardo
+DB_PASSWORD=A_great_one
+DB_HOST=db
+DB_PORT=5432
+WEB_PORT=8000
+```
 ## Using API
 
 This project only serves the backend, accessible via Django Rest Framework GUI.
