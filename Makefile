@@ -86,6 +86,7 @@ migrate:
 	$(IN_ENV) django-admin migrate
 
 fixture: build makemigrations migrate
+# Need user to execute plain-fixture
 # fixture: build makemigrations migrate plain-fixture
 
 plain-fixture:
