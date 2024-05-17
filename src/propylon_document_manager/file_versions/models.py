@@ -61,7 +61,7 @@ class FileVersion(models.Model):
         ordering = ['-version_number']
 
     def save(self, *args, **kwargs):
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if self.pk is None:  # Check if new object
             existing = FileVersion.objects.filter(author=self.author, file_name=self.file_name).first()
             if existing:

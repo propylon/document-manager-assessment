@@ -14,7 +14,7 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),
     path("auth-token/", obtain_auth_token),
 ]
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
 if settings.DEBUG:
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar
