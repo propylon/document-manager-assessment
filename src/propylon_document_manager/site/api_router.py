@@ -19,5 +19,4 @@ file_version_list = FileVersionViewSet.as_view({
 urlpatterns = [
     path('', include(router.urls)),
     re_path(r'file_versions/(?P<filename>[\w./-]+)/$', file_version_list, name='file_version-list'),
-    # path('file_versions/<str:filename>/<int:id>', file_version_detail, name='file_version-list'),
 ]

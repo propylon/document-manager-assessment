@@ -24,12 +24,14 @@ class IsAuthor(BasePermission):
             return True
 
         # Allow only if the user is the files creator
-        # import pdb; pdb.set_trace()
         if request.method in ['POST', 'PUT']:
+            # import pdb; pdb.set_trace()
             try:
                 file_name = view.kwargs['filename']
-                file = FileVersion.objects.get(file_name=file_name)
-                return file.author == request.user
+                existing = FileVersion.objects.filter(author=request.user, file_name=file_name).order_by('-version_number').first()
+                if not existing:
+                    raise FileVersion.DoesNotExist
+                return True
             except FileVersion.DoesNotExist:
                 return True  # Allow creation for non-existing file
 
@@ -42,7 +44,7 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
     queryset = FileVersion.objects.all()
     lookup_field = "id"
     permission_classes = [IsAuthenticated, IsAuthor]
-    filterset_fields = ['revision']
+    filterset_fields = ['version_number']
     filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
@@ -74,22 +76,21 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=201, headers=headers)
-        # Increment version if same author and title exist
-        # if not serializer.instance.version:  # Check if version already set (for updates)
-        #     existing = FileVersion.objects.filter(author=serializer.validated_data['author'],
-        #                                        title=serializer.validated_data['title'])
-        #     if existing:
-        #         serializer.instance.version = existing.latest('version').version + 1
-        # serializer.save()
 
     def list(self, request, *args, **kwargs):
         # import pdb; pdb.set_trace()
         filename = self.kwargs.get('filename')
         revision = request.query_params.get('revision', None)
         if revision is None:
-            latest_record = FileVersion.objects.filter(author=request.user, file_name=filename).order_by('-revision').first()
+            latest_record = FileVersion.objects.filter(author=request.user, file_name=filename).order_by('-version_number').first()
             if latest_record:
                 serializer = self.get_serializer(latest_record)
                 return Response(serializer.data)
             return Response({"detail": "No records found"}, status=404)
-        return super().list(request, *args, **kwargs)
+
+        record = FileVersion.objects.get(author=request.user, file_name=filename, version_number=revision)
+        if record:
+            serializer = self.get_serializer(record)
+            return Response(serializer.data)
+
+        return Response({"detail": "No records found"}, status=404)
