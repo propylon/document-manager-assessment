@@ -11,4 +11,4 @@ django-model-utils  # https://github.com/jazzband/django-model-utils
 # Django REST Framework
 djangorestframework  # https://github.com/encode/django-rest-framework
 django-cors-headers  # https://github.com/adamchainz/django-cors-headers
-django_filter
+django-filter

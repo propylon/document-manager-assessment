@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render
 
 from rest_framework.filters import OrderingFilter
@@ -17,6 +18,8 @@ from rest_framework.permissions import IsAuthenticated
 from ..models import FileVersion
 from .serializers import FileVersionSerializer
 
+logger = logging.getLogger(__name__)
+
 
 class IsAuthor(BasePermission):
     def has_permission(self, request, view):
@@ -35,6 +38,7 @@ class IsAuthor(BasePermission):
             except FileVersion.DoesNotExist:
                 return True  # Allow creation for non-existing file
 
+        logger.warning(f"User does not have permissions {request.user.email}")
         return False
 
 
@@ -48,21 +52,32 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
     filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
+        """
+        Return query object
+        """
         # import pdb; pdb.set_trace()
         filename = self.kwargs.get('filename')
         return FileVersion.objects.filter(author=self.request.user, file_name=filename)
 
     def perform_create(self, serializer):
+        """
+        Override perform_create method
+        """
         # import pdb; pdb.set_trace()
         filename = self.kwargs.get('filename')
         latest_record = FileVersion.objects.filter(author=self.request.user, file_name=filename).order_by('-version_number').first()
         if latest_record:
+            logger.info(f"Latest revision {latest_record.version_number}")
             new_revision = latest_record.version_number + 1
         else:
+            logger.info(f"New record {filename}")
             new_revision = 1
         serializer.save(author=self.request.user, file_name=filename, version_number=new_revision)
 
     def create(self, request, *args, **kwargs):
+        """
+        Override create method
+        """
         # import pdb; pdb.set_trace()
         file = kwargs.get("filename")
         if not file:
@@ -78,6 +93,9 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
         return Response(serializer.data, status=201, headers=headers)
 
     def list(self, request, *args, **kwargs):
+        """
+        Override list method to return latest or specific versioned file
+        """
         # import pdb; pdb.set_trace()
         filename = self.kwargs.get('filename')
         revision = request.query_params.get('revision', None)
