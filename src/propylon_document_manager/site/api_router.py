@@ -19,5 +19,5 @@ app_label = "api"
 # This regular expression pattern (?P<filename>[\w./-]+) allows characters a-z, A-Z, 0-9, _, ., /, and - in the filename.
 urlpatterns = [
     path('', include(router.urls)),
-    re_path(r'file_versions/(?P<filename>[\w./-]+)/$', file_version_list, name='file_version-list'),
+    re_path(r'file_versions/(?P<filename>[\w./-]+)$', file_version_list, name='file_version-list'),
 ]

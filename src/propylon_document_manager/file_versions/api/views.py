@@ -19,11 +19,8 @@ logger = logging.getLogger(__name__)
 
 class IsAuthor(BasePermission):
     def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
-            return True
-
         # Allow only if the user is the files creator
-        if request.method in ['POST', 'PUT']:
+        if request.method in ['POST', 'PUT', 'GET', 'DELETE']:
             # import pdb; pdb.set_trace()
             try:
                 file_name = view.kwargs['filename']
@@ -43,8 +40,8 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
     serializer_class = FileVersionSerializer
     queryset = FileVersion.objects.all()
     lookup_field = "id"
-    # permission_classes = [IsAuthenticated, IsAuthor]
-    permission_classes = [IsAuthor]
+    permission_classes = [IsAuthenticated, IsAuthor]
+    # permission_classes = [IsAuthor]
     filterset_fields = ['version_number']
 
     def get_queryset(self):
