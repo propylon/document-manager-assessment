@@ -8,8 +8,9 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("file_versions", FileVersionViewSet)
+router.register(r'file_versions/(?P<filename>[^/.]+)', FileVersionViewSet, basename="file_version")
 
 
 app_name = "api"
+import pdb; pdb.set_trace()
 urlpatterns = router.urls

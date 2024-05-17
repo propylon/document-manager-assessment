@@ -85,7 +85,8 @@ makemigrations:
 migrate:
 	$(IN_ENV) django-admin migrate
 
-fixture: build makemigrations migrate plain-fixture
+fixture: build makemigrations migrate
+# fixture: build makemigrations migrate plain-fixture
 
 plain-fixture:
 	$(IN_ENV) django-admin load_file_fixtures
