@@ -43,7 +43,8 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
     serializer_class = FileVersionSerializer
     queryset = FileVersion.objects.all()
     lookup_field = "id"
-    permission_classes = [IsAuthenticated, IsAuthor]
+    # permission_classes = [IsAuthenticated, IsAuthor]
+    permission_classes = [IsAuthor]
     filterset_fields = ['version_number']
 
     def get_queryset(self):

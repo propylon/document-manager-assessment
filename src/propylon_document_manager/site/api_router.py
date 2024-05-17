@@ -15,6 +15,7 @@ file_version_list = FileVersionViewSet.as_view({
     'post': 'create'
 })
 
+app_label = "api"
 # This regular expression pattern (?P<filename>[\w./-]+) allows characters a-z, A-Z, 0-9, _, ., /, and - in the filename.
 urlpatterns = [
     path('', include(router.urls)),
