@@ -1,15 +1,11 @@
 import logging
-from django.shortcuts import render
 
-from rest_framework.filters import OrderingFilter
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
     RetrieveModelMixin,
     ListModelMixin
 )
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.viewsets import GenericViewSet
@@ -49,7 +45,6 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
     lookup_field = "id"
     permission_classes = [IsAuthenticated, IsAuthor]
     filterset_fields = ['version_number']
-    filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
         """
