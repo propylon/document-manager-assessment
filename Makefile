@@ -85,7 +85,10 @@ makemigrations:
 migrate:
 	$(IN_ENV) django-admin migrate
 
-fixture: build makemigrations migrate
+migratecreatetable:
+	$(IN_ENV) django-admin migrate --run-syncdb
+
+fixture: build makemigrations migrate migratecreatetable
 # Need user to execute plain-fixture
 # fixture: build makemigrations migrate plain-fixture
 
