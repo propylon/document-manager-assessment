@@ -2,15 +2,17 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token
 
 
 class FileVersionViewSetTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user1 = get_user_model().objects.create_user(name="test1", email="test1@test.com")
+        cls.user1 = get_user_model().objects.create_user(name="test1", email="test1@test.com", password='user@1234')
         cls.client = APIClient()
+        cls.token = Token.objects.create(user=cls.user1)
         cls.client.force_authenticate(user=cls.user1)
-        cls.user2 = get_user_model().objects.create_user(name="test2", email="test2@test.com")
+        cls.user2 = get_user_model().objects.create_user(name="test2", email="test2@test.com", password='user@1234')
         cls.filename1 = 'some/path/testfile1.txt'
         cls.client.post(reverse('file_version-list', kwargs={'filename': cls.filename1}))
 
@@ -19,6 +21,9 @@ class FileVersionViewSetTest(APITestCase):
         cls.client.post(reverse('file_version-list', kwargs={'filename': cls.filename2}))
 
     def test_create_file(self):
+        # import pdb; pdb.set_trace()
+        # self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        # self.client.login(username='test1@test.com', password='user@1234')
         self.client.force_authenticate(user=self.user1)
         url = reverse('file_version-list', kwargs={'filename': f'{self.filename1}-extra'})
         response = self.client.post(url, {"foo": "bar"})

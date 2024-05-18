@@ -101,6 +101,9 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
 
         record = FileVersion.objects.get(author=request.user, file_name=filename, version_number=revision)
         if record:
+            # Read blob from S3,
+            # f"{request.user.id}-{filename}-{revord.version_number}"
+            # append to the serialized data
             serializer = self.get_serializer(record)
             return Response(serializer.data)
 

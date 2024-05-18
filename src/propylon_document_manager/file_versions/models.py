@@ -60,16 +60,16 @@ class FileVersion(models.Model):
         unique_together = ('file_name', 'version_number', 'author')
         ordering = ['-version_number']
 
-    def save(self, *args, **kwargs):
-        # import pdb; pdb.set_trace()
-        if self.pk is None:  # Check if new object
-            existing = FileVersion.objects.filter(author=self.author, file_name=self.file_name).order_by('-version_number').first()
-            if existing:
-                self.version_number = existing.version_number + 1
-        # TODO
-        # Send the blob to S3 with file name as -
-        # f"{self.author.id}-{self.file_name}-{self.version_number}"
-        # If writing to S3 fails, the whole operation should fail
-        # Using S3, will help us prevent maintaining a filesytem
-        # ourselves
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # import pdb; pdb.set_trace()
+    #     if self.pk is None:  # Check if new object
+    #         existing = FileVersion.objects.filter(author=self.author, file_name=self.file_name).order_by('-version_number').first()
+    #         if existing:
+    #             self.version_number = existing.version_number + 1
+    #     # TODO
+    #     # Send the blob to S3 with file name as -
+    #     # f"{self.author.id}-{self.file_name}-{self.version_number}"
+    #     # If writing to S3 fails, the whole operation should fail
+    #     # Using S3, will help us prevent maintaining a filesytem
+    #     # ourselves
+    #     super().save(*args, **kwargs)
