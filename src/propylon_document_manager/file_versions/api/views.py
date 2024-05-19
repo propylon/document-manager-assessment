@@ -46,6 +46,7 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
             logger.info(f"Latest revision {latest_record.version_number}")
             new_revision = latest_record.version_number + 1
         else:
+            # import pdb; pdb.set_trace()
             logger.info(f"New record {filename}")
             new_revision = 1
         serializer.save(author=self.request.user, file_name=filename, version_number=new_revision)
