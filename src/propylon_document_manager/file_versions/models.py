@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from propylon_document_manager.site.settings.base import AUTH_USER_MODEL
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -54,7 +55,7 @@ class FileVersion(models.Model):
     file_name = models.fields.CharField(max_length=512)
     version_number = models.fields.PositiveIntegerField(default=1)
     # user = models.ForeignKey('auth.User', related_name='files', on_delete=models.CASCADE)
-    author = models.ForeignKey(User, related_name='files', on_delete=models.CASCADE)
+    author = models.ForeignKey(AUTH_USER_MODEL, related_name='files', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('file_name', 'version_number', 'author')
