@@ -30,7 +30,7 @@ class FileVersionViewSetTest(APITestCase):
         response = self.client.login(email=self.user1.email, password="user@1234")
         self.assertTrue(response)
         url = reverse('file_version-list', kwargs={'filename': f'{self.filename1}-extra'})
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         response = self.client.post(url, {"foo": "bar"})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['version_number'], 1)
