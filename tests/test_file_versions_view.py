@@ -8,13 +8,11 @@ from rest_framework.authtoken.models import Token
 class FileVersionViewSetTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user1 = get_user_model().objects.create_user(name="test1", email="test1@test.com")
-        cls.user1.set_password("user@1234")
+        cls.user1 = get_user_model().objects.create_user(name="test1", email="test1@test.com", password="user@1234")
         cls.client = APIClient()
         cls.token = Token.objects.create(user=cls.user1)
         cls.client.force_authenticate(user=cls.user1)
-        cls.user2 = get_user_model().objects.create_user(name="test2", email="test2@test.com")
-        cls.user2.set_password("user@1234")
+        cls.user2 = get_user_model().objects.create_user(name="test2", email="test2@test.com", password="user@1234")
 
         # import pdb; pdb.set_trace()
         # cls.client.login(username='test1@test.com', password='user@1234')
@@ -28,8 +26,9 @@ class FileVersionViewSetTest(APITestCase):
     def test_create_file(self):
         # self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         # self.client.force_authenticate(user=self.user1)
-        response = self.client.login(username='test1@test.com', password='user@1234')
         import pdb; pdb.set_trace()
+        response = self.client.login(email=self.user1.email, password="user@1234")
+        self.assertTrue(response)
         url = reverse('file_version-list', kwargs={'filename': f'{self.filename1}-extra'})
         import pdb; pdb.set_trace()
         response = self.client.post(url, {"foo": "bar"})
