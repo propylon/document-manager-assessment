@@ -22,9 +22,9 @@ class FileVersionViewSetTest(APITestCase):
 
     def test_create_file(self):
         # import pdb; pdb.set_trace()
-        # self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        # self.client.login(username='test1@test.com', password='user@1234')
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         self.client.force_authenticate(user=self.user1)
+        # self.client.login(username='test1@test.com', password='user@1234')
         url = reverse('file_version-list', kwargs={'filename': f'{self.filename1}-extra'})
         response = self.client.post(url, {"foo": "bar"})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

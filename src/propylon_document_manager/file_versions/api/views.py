@@ -7,32 +7,14 @@ from rest_framework.mixins import (
     ListModelMixin
 )
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import FileVersion
+from .permissions import IsAuthor
 from .serializers import FileVersionSerializer
 
 logger = logging.getLogger(__name__)
-
-
-class IsAuthor(BasePermission):
-    def has_permission(self, request, view):
-        # Allow only if the user is the files creator
-        if request.method in ['POST', 'PUT', 'GET', 'DELETE']:
-            # import pdb; pdb.set_trace()
-            try:
-                file_name = view.kwargs['filename']
-                existing = FileVersion.objects.filter(author=request.user, file_name=file_name).order_by('-version_number').first()
-                if not existing:
-                    raise FileVersion.DoesNotExist
-                return True
-            except FileVersion.DoesNotExist:
-                return True  # Allow creation for non-existing file
-
-        logger.warning(f"User does not have permissions {request.user.email}")
-        return False
 
 
 class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
@@ -40,6 +22,7 @@ class FileVersionViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
     serializer_class = FileVersionSerializer
     queryset = FileVersion.objects.all()
     lookup_field = "id"
+    # permission_classes = [IsAuthenticated]
     permission_classes = [IsAuthenticated, IsAuthor]
     # permission_classes = [IsAuthor]
     filterset_fields = ['version_number']
