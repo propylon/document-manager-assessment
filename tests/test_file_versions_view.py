@@ -27,8 +27,8 @@ class FileVersionViewSetTest(APITestCase):
 
     def test_create_file(self):
         # self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        self.client.force_authenticate(user=self.user1)
-        # response = self.client.login(username='test1@test.com', password='user@1234')
+        # self.client.force_authenticate(user=self.user1)
+        response = self.client.login(username='test1@test.com', password='user@1234')
         import pdb; pdb.set_trace()
         url = reverse('file_version-list', kwargs={'filename': f'{self.filename1}-extra'})
         import pdb; pdb.set_trace()
