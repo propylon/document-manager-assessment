@@ -18,13 +18,7 @@ from ...utils.status_code import StatusCode
 logger = logging.getLogger(__name__)
 
 
-class FileVersionViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
-    serializer_class = FileVersionSerializer
-    queryset = FileVersion.objects.all()
-    lookup_field = "id"
-
-
-class FileUploadViewSet(ModelViewSet):
+class FileVersionViewSet(ModelViewSet):
     serializer_class = FileVersionSerializer
 
     def get_queryset(self):
@@ -100,24 +94,3 @@ class FileUploadViewSet(ModelViewSet):
 
         return FileResponse(rev.content, as_attachment=True, filename=file_name)
 
-
-class GetFileByRevisionView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]
-    # permission_classes = []
-
-    def get(self, request, *args, **kwargs):
-        path = kwargs.get('path')
-        revision_number = kwargs.get('revision_number')
-
-        return Response(**StatusCode.get_response(200))
-        # Get the document
-        document = get_object_or_404(Document, path=path, owner=request.user)
-
-        # Get the revision
-        if revision_number:
-            revision = get_object_or_404(Revision, document=document, revision_number=revision_number)
-        else:
-            revision = document.revisions.order_by('-revision_number').first()
-
-        # Return the file as a response
-        return FileResponse(revision.content, as_attachment=True, filename=document.path)
