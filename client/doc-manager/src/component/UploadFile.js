@@ -1,0 +1,230 @@
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  Alert,
+  Tooltip,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Download, Visibility } from "@mui/icons-material";
+import config from "../config";
+
+function UploadAndDocumentList() {
+  const [file, setFile] = useState(null);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+  const [documents, setDocuments] = useState([]);
+  const navigate = useNavigate();
+
+  // Handle file upload
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      setError("Please select a file to upload.");
+      return;
+    }
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setError("You must be logged in to upload a file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("content", file);
+
+    try {
+      const response = await fetch(`${config.serverUrl}/api/document`, {
+        method: "POST",
+        headers: {
+          Authorization: `token ${token}`,
+        },
+        body: formData,
+      });
+
+      const responseData = await response.json();
+
+      if (response.status === 200 && responseData.responseCode === 200) {
+        setSuccess("File uploaded successfully!");
+        setFile(null);
+        setError("");
+        fetchDocuments(); // Refresh the document list after upload
+      } else {
+        setSuccess("");
+        setError(responseData.responseMessage);
+      }
+    } catch (err) {
+      setError(err.message || "An error occurred. Please try again.");
+      setSuccess("");
+    }
+  };
+
+  // Fetch document list
+  const fetchDocuments = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setError("You must be logged in to view the document list.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${config.serverUrl}/api/file`, {
+        method: "GET",
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch documents.");
+      }
+
+      const data = await response.json();
+      setDocuments(data);
+    } catch (err) {
+      setError(err.message || "An error occurred. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    fetchDocuments();
+  }, []);
+
+  const handleViewVersions = (id) => {
+    navigate(`/file-versions?id=${id}`);
+  };
+
+  const handleDownloadLatest = async (fileName) => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setError("You must be logged in to download files.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${config.serverUrl}/api/document/${fileName}`, {
+        method: "GET",
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to download the file.");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message || "An error occurred while downloading the file.");
+    }
+  };
+
+  return (
+    <Container maxWidth="md">
+      {/* Upload Form */}
+      <Box mt={4} mb={4}>
+        <Typography variant="h6" sx={{ textAlign: "left", mb: 2 }}>
+          Upload File
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {success}
+          </Alert>
+        )}
+        <form onSubmit={handleUpload}>
+          <Box mb={3} display="flex" alignItems="center" justifyContent="space-between">
+            <TextField
+              type="file"
+              fullWidth
+              onChange={handleFileChange}
+              InputLabelProps={{ shrink: true }}
+              sx={{ flex: 1, mr: 2 }} // Add margin-right to create space between the input and button
+            />
+            <Button type="submit" variant="contained" color="primary">
+              Upload
+            </Button>
+          </Box>
+        </form>
+      </Box>
+
+      {/* Document List */}
+      <Box>
+        <Typography variant="h6" sx={{ textAlign: "left", mb: 2 }}>
+          Found {documents.length} Document(s)
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>File Name</TableCell>
+                <TableCell>Latest Version</TableCell>
+                <TableCell>Total Versions</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {documents.map((doc, index) => (
+                <TableRow key={index}>
+                  <TableCell>{doc.file_name}</TableCell>
+                  <TableCell>{doc.latest_version_number}</TableCell>
+                  <TableCell>{doc.file_version_count}</TableCell>
+                  <TableCell>
+                    <Tooltip title="View Versions">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleViewVersions(doc.id)}
+                        sx={{ mr: 1 }}
+                      >
+                        <Visibility />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title="Download Latest">
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDownloadLatest(doc.file_name)}
+                      >
+                        <Download />
+                      </Button>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </Container>
+  );
+}
+
+export default UploadAndDocumentList;
