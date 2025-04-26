@@ -5,6 +5,8 @@ from ..models import FileVersion, Document
 
 class FileVersionSerializer(serializers.ModelSerializer):
     content = serializers.FileField(required=True)
+    file_name = serializers.CharField(read_only=True)  # Dynamic field
+    full_path = serializers.CharField(read_only=True)  # Dynamic field
 
     # def to_internal_value(self, data):
     #     data = super().to_internal_value(data)
@@ -23,8 +25,13 @@ class FileVersionResponseSerializer(serializers.BaseSerializer):
     revisionNumber = serializers.IntegerField()
 
 
-class FileInputSerializer(serializers.Serializer):
-    file = serializers.FileField()
+class DocumentSerializer(serializers.ModelSerializer):
+    file_version_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Document
+        fields = "__all__"
+        read_only_fields = ['id', 'file_name', 'path', 'owner', 'latest_version_number', 'created_at', 'modified_at']
 
     # def validate_file(self, value):
     #     # Add custom validation logic if needed

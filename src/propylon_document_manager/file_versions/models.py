@@ -58,7 +58,7 @@ class FileVersion(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, related_name='revisions')
     content = models.FileField(upload_to=user_directory_path, null=True)
     version_number = models.fields.PositiveIntegerField()
-    hash = models.CharField(max_length=255, unique=True)
+    hash = models.CharField(max_length=255)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(default=now)
 
