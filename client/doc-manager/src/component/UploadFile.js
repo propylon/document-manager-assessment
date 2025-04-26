@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Download, Visibility } from "@mui/icons-material";
+import { Download, Visibility, UploadFile } from "@mui/icons-material";
 import config from "../config";
 
 function UploadAndDocumentList() {
@@ -168,9 +168,21 @@ function UploadAndDocumentList() {
               InputLabelProps={{ shrink: true }}
               sx={{ flex: 1, mr: 2 }} // Add margin-right to create space between the input and button
             />
-            <Button type="submit" variant="contained" color="primary">
-              Upload
-            </Button>
+            <Tooltip title="Upload File">
+              <Button 
+                type="submit" 
+                variant="contained" 
+                color="primary"
+                sx={{
+                  borderRadius: "50%", // Make the button round
+                  minWidth: "48px", // Set a minimum width for the button
+                  minHeight: "48px", // Set a minimum height for the button
+                  padding: "12px", // Add padding for better spacing
+                }}
+              >
+                <UploadFile/>
+              </Button>
+            </Tooltip>
           </Box>
         </form>
       </Box>
@@ -192,7 +204,12 @@ function UploadAndDocumentList() {
             </TableHead>
             <TableBody>
               {documents.map((doc, index) => (
-                <TableRow key={index}>
+                <TableRow 
+                  key={index}
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? "white" : "grey.100", // Alternate row colors
+                  }}
+                >
                   <TableCell>{doc.file_name}</TableCell>
                   <TableCell>{doc.latest_version_number}</TableCell>
                   <TableCell>{doc.file_version_count}</TableCell>

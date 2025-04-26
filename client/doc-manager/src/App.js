@@ -3,13 +3,16 @@ import React, { useState } from "react";
 import AppRoutes from "./Routes";
 
 import { Link } from "react-router-dom";
-import { Logout } from "@mui/icons-material"; // Import the Logout icon
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { UploadFile, Folder, Logout , Person} from "@mui/icons-material"; // Import icons
+import { Divider } from "@mui/material"; // Import Divider
+import { useTheme } from "@mui/material/styles"; // Import useTheme
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -25,26 +28,57 @@ function App() {
     <div className="App">
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 , textAlign: "left" }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left" }}>
             Document Manager
           </Typography>
           {isLoggedIn ? (
             <>
-              <Button color="inherit" component={Link} to="/upload-file">
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ mx: 2, borderColor: theme.palette.divider  }} // Add spacing and color
+              />
+              <Button
+                color="inherit"
+                component={Link}
+                to="/upload-file"
+                startIcon={<UploadFile />} // Add UploadFile icon
+              >
                 Upload File
               </Button>
-              {/* <Button color="inherit" component={Link} to="/document-list">
-                Document List
-              </Button> */}
-              <Button color="inherit" component={Link} to="/file-versions">
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ mx: 2, borderColor: theme.palette.divider }} // Add spacing and color
+              />
+              <Button
+                color="inherit"
+                component={Link}
+                to="/file-versions"
+                startIcon={<Folder />} // Add Folder icon
+              >
                 File Versions
               </Button>
-              <Button color="inherit" onClick={handleLogout} startIcon={<Logout />}>
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ mx: 2, borderColor: theme.palette.divider }} // Add spacing and color
+              />
+              <Button
+                color="inherit"
+                onClick={handleLogout}
+                startIcon={<Logout />}
+              >
                 Logout
               </Button>
             </>
           ) : (
-            <Button color="inherit" component={Link} to="/login">
+            <Button
+              color="inherit"
+              component={Link}
+              to="/login"
+              startIcon={<Person />} // Add Login icon
+            >
               Login
             </Button>
           )}

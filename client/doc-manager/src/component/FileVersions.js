@@ -55,15 +55,23 @@ function FileVersionsList(props) {
           <TableRow>
             <TableCell>File Name</TableCell>
             <TableCell>Version</TableCell>
-            <TableCell>Content</TableCell>
             <TableCell>Created At</TableCell>
+            <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {file_versions.map((file_version) => (
-            <TableRow key={file_version.id}>
+          {file_versions.map((file_version, index) => (
+            <TableRow 
+              key={file_version.id}
+              sx={{
+                backgroundColor: index % 2 === 0 ? "white" : "grey.100", // Alternate row colors
+              }}
+            >
               <TableCell>{file_version.file_name}</TableCell>
               <TableCell>{file_version.version_number}</TableCell>
+              <TableCell>
+                {new Date(file_version.created_at).toLocaleString()}
+              </TableCell>
               <TableCell>
                 <Button
                   variant="contained"
@@ -77,9 +85,6 @@ function FileVersionsList(props) {
                 >      
                 <Download />
                 </Button>
-              </TableCell>
-              <TableCell>
-                {new Date(file_version.created_at).toLocaleString()}
               </TableCell>
             </TableRow>
           ))}
