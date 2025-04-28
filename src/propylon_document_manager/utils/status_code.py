@@ -14,6 +14,8 @@ class StatusCode:
 
     codes = {
         200: "Success",
+        202: "Logout Success",
         301: "File Already Exists",
         400: "Request Version does not exist",
+        401: "Invalid Refresh Token",
     }

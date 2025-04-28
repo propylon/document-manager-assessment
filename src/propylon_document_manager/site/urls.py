@@ -6,6 +6,8 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 
+from propylon_document_manager.auth.views import CustomTokenObtainPairView, CustomTokenRefreshView, LogoutView
+
 # API URLS
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,6 +16,10 @@ urlpatterns = [
     # DRF auth token
     path("api-auth/", include("rest_framework.urls")),
     path("auth-token/", obtain_auth_token),
+    path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/refresh-token/", CustomTokenRefreshView.as_view(), name="token_refresh"),
+    path("api/logout/", LogoutView.as_view(), name="logout"),
+
 ]
 
 if settings.DEBUG:
