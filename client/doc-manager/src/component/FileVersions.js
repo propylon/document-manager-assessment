@@ -134,7 +134,7 @@ function FileVersions() {
     };
 
     dataFetch();
-  }, []);
+  }, [id]);
 
   if (error) {
     return (

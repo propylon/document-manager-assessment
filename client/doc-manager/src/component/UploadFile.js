@@ -90,12 +90,12 @@ function UploadAndDocumentList() {
         },
       });
 
-      if (!response.ok) {
+      if (!response.ok && response.responseCode !== 200) {
         throw new Error("Failed to fetch documents.");
       }
 
       const data = await response.json();
-      setDocuments(data);
+      setDocuments(data["data"]);
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
     }
@@ -210,9 +210,9 @@ function UploadAndDocumentList() {
                     backgroundColor: index % 2 === 0 ? "white" : "grey.100", // Alternate row colors
                   }}
                 >
-                  <TableCell>{doc.file_name}</TableCell>
-                  <TableCell>{doc.latest_version_number}</TableCell>
-                  <TableCell>{doc.file_version_count}</TableCell>
+                  <TableCell>{doc.fileName}</TableCell>
+                  <TableCell>{doc.latestVersionNumber}</TableCell>
+                  <TableCell>{doc.fileVersionCount}</TableCell>
                   <TableCell>
                     <Tooltip title="View Versions">
                       <Button
@@ -228,7 +228,7 @@ function UploadAndDocumentList() {
                       <Button
                         variant="contained"
                         color="secondary"
-                        onClick={() => handleDownloadLatest(doc.file_name)}
+                        onClick={() => handleDownloadLatest(doc.fileName)}
                       >
                         <Download />
                       </Button>

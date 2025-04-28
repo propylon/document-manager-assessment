@@ -116,16 +116,16 @@ class FileVersionViewSet(ModelViewSet):
 class DocumentViewSet(ModelViewSet):
     serializer_class = DocumentSerializer
 
-    def get_queryset(self):
-        return Document.objects.filter(
+    def list(self, request, *args, **kwargs):
+        data = Document.objects.filter(
             owner=self.request.user
         ).values(
             'id',
-            'file_name',
-            'latest_version_number',
-            'owner__pk'
+            fileName=F('file_name'),
+            latestVersionNumber=F('latest_version_number'),
         ).annotate(
-            file_version_count=Count('revisions__id'),
+            fileVersionCount=Count('revisions__id'),
         ).order_by(
             '-created_at'
         )
+        return Response(StatusCode.get_response(200) | {'data': data})
