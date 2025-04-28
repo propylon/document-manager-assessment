@@ -15,20 +15,20 @@ import {
 } from "@mui/material";
 import { Download } from "@mui/icons-material"; 
 import { useLocation } from "react-router-dom";
+import { fetchWithRefresh } from "../utils/FetchWithRefresh"; // Import the fetchWithRefresh function
 
 function FileVersionsList(props) {
   const file_versions = props.file_versions;
-  const token = localStorage.getItem("authToken");
 
   const handleLinkClick = async (file_name, version_number) => {
     const apiUrl = `${config.serverUrl}/api/document/${file_name}?revision=${version_number}`;
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetchWithRefresh(apiUrl, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `token ${token}`, // Use the token from localStorage
         },
+        credentials: 'include',
       });
 
       // Convert response to blob
@@ -104,21 +104,21 @@ function FileVersions() {
 
   useEffect(() => {
     const dataFetch = async () => {
-      const token = localStorage.getItem("authToken");
+      // const token = localStorage.getItem("authToken");
 
-      if (!token) {
-        console.error("No token found in localStorage");
-        setError("No token found in localStorage");
-        return;
-      }
+      // if (!token) {
+      //   console.error("No token found in localStorage");
+      //   setError("No token found in localStorage");
+      //   return;
+      // }
 
       try {
-        const response = await fetch(`${config.serverUrl}/api/document?id=${id}`, {
+        const response = await fetchWithRefresh(`${config.serverUrl}/api/document?id=${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `token ${token}`, // Use the token from localStorage
           },
+          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -147,7 +147,7 @@ function FileVersions() {
   return (
     <Container>
         <Typography variant="h6" sx={{ textAlign: "left", mb: 2 }}>
-          Found {data.length} File Versions
+          Found {data.length} File Version(s)
         </Typography>
       <FileVersionsList file_versions={data} />
     </Container>

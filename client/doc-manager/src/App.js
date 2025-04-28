@@ -8,20 +8,37 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { UploadFile, Folder, Logout , Person} from "@mui/icons-material"; // Import icons
 import { Divider } from "@mui/material"; // Import Divider
 import { useTheme } from "@mui/material/styles"; // Import useTheme
+import config from "./config"; // Import the config file
+import { fetchWithRefresh } from "./utils/FetchWithRefresh"; // Import the fetchWithRefresh function
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const theme = useTheme();
+  const [error, setError] = useState("");
 
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsLoggedIn(false);
-    localStorage.removeItem("authToken"); // Clear token on logout
-    navigate("/login"); // Redirect to login page
+    try {
+      const response = await fetchWithRefresh(`${config.serverUrl}/api/logout/`, {
+        method: "GET",
+        credentials: "include",
+      });
+  
+      const responseData = await response.json();
+  
+      if (response.status === 200 && responseData.responseCode === 202) {
+        navigate("/login"); // Redirect to the login page
+      } else {
+        setError(responseData.responseMessage || "Failed to logout.");
+      }
+    } catch (err) {
+      setError(err.message || "An error occurred during logout.");
+    }
   };
 
   return (

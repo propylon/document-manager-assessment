@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 function Login({ onLogin }) {
-  const [username, setUsername] = useState("admin@example.com");
+  const [email, setUsername] = useState("admin@example.com");
   const [password, setPassword] = useState("admin@123");
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
@@ -20,29 +20,30 @@ function Login({ onLogin }) {
     e.preventDefault();
 
     // Simple validation
-    if (!username || !password) {
-      setError("Username and password are required.");
+    if (!email || !password) {
+      setError("Email and password are required.");
       return;
     }
 
     try {
       // Call the API
-      const response = await fetch(`${config.serverUrl}/auth-token/`, {
+      const response = await fetch(`${config.serverUrl}/api/token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({email, password }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error("Invalid username or password.");
+        throw new Error("Invalid email or password.");
       }
 
       const data = await response.json();
 
       // Save the token to localStorage
-      localStorage.setItem("authToken", data.token);
+      // localStorage.setItem("authToken", data.token);
 
       // Notify parent component about successful login
       onLogin();
@@ -82,7 +83,7 @@ function Login({ onLogin }) {
                 label="Username"
                 variant="outlined"
                 fullWidth
-                value={username}
+                value={email}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </Box>

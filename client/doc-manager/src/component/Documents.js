@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Tooltip } from "@mui/material"; // Import Tooltip
 import { Download, Visibility } from "@mui/icons-material"; // Import icons
 import config from "../config";
+import { fetchWithRefresh } from "../utils/FetchWithRefresh"; // Import the fetchWithRefresh function
 
 function DocumentList() {
   const [documents, setDocuments] = useState([]);
@@ -12,18 +13,14 @@ function DocumentList() {
 
   useEffect(() => {
     const fetchDocuments = async () => {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        setError("You must be logged in to view the document list.");
-        return;
-      }
 
       try {
-        const response = await fetch(`${config.serverUrl}/api/file`, {
+        const response = await fetchWithRefresh(`${config.serverUrl}/api/file`, {
           method: "GET",
-          headers: {
-            Authorization: `token ${token}`,
-          },
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -45,18 +42,14 @@ function DocumentList() {
   };
 
   const handleDownloadLatest = async (fileName) => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setError("You must be logged in to download files.");
-      return;
-    }
-
+    
     try {
-      const response = await fetch(`${config.serverUrl}/api/document/${fileName}`, {
+      const response = await fetchWithRefresh(`${config.serverUrl}/api/document/${fileName}`, {
         method: "GET",
         headers: {
-          Authorization: `token ${token}`,
+          "Content-Type": "application/json",
         },
+        credentials: 'include',
       });
 
       if (!response.ok) {

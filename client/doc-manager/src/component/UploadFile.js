@@ -18,6 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Download, Visibility, UploadFile } from "@mui/icons-material";
 import config from "../config";
+import { fetchWithRefresh } from "../utils/FetchWithRefresh";
 
 function UploadAndDocumentList() {
   const [file, setFile] = useState(null);
@@ -39,21 +40,19 @@ function UploadAndDocumentList() {
       return;
     }
 
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setError("You must be logged in to upload a file.");
-      return;
-    }
+    // const token = localStorage.getItem("authToken");
+    // if (!token) {
+    //   setError("You must be logged in to upload a file.");
+    //   return;
+    // }
 
     const formData = new FormData();
     formData.append("content", file);
 
     try {
-      const response = await fetch(`${config.serverUrl}/api/document`, {
+      const response = await fetchWithRefresh(`${config.serverUrl}/api/document`, {
         method: "POST",
-        headers: {
-          Authorization: `token ${token}`,
-        },
+        credentials: 'include',
         body: formData,
       });
 
@@ -76,18 +75,16 @@ function UploadAndDocumentList() {
 
   // Fetch document list
   const fetchDocuments = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setError("You must be logged in to view the document list.");
-      return;
-    }
+    // const token = localStorage.getItem("authToken");
+    // if (!token) {
+    //   setError("You must be logged in to view the document list.");
+    //   return;
+    // }
 
     try {
-      const response = await fetch(`${config.serverUrl}/api/file`, {
+      const response = await fetchWithRefresh(`${config.serverUrl}/api/file`, {
         method: "GET",
-        headers: {
-          Authorization: `token ${token}`,
-        },
+        credentials: 'include'
       });
 
       if (!response.ok && response.responseCode !== 200) {
@@ -110,18 +107,16 @@ function UploadAndDocumentList() {
   };
 
   const handleDownloadLatest = async (fileName) => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setError("You must be logged in to download files.");
-      return;
-    }
+    // const token = localStorage.getItem("authToken");
+    // if (!token) {
+    //   setError("You must be logged in to download files.");
+    //   return;
+    // }
 
     try {
-      const response = await fetch(`${config.serverUrl}/api/document/${fileName}`, {
+      const response = await fetchWithRefresh(`${config.serverUrl}/api/document/${fileName}`, {
         method: "GET",
-        headers: {
-          Authorization: `token ${token}`,
-        },
+        credentials: 'include'
       });
 
       if (!response.ok) {
@@ -210,24 +205,27 @@ function UploadAndDocumentList() {
                     backgroundColor: index % 2 === 0 ? "white" : "grey.100", // Alternate row colors
                   }}
                 >
-                  <TableCell>{doc.fileName}</TableCell>
+                  <TableCell>
+                    <Tooltip title="View Versions">
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevent default link behavior
+                          handleViewVersions(doc.id); // Trigger the download
+                        }}
+                        style={{textDecoration: "underline",color: "black", cursor: "pointer", fontWeight: "bold"}}
+                      >
+                      {doc.fileName}
+                      </a>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell>{doc.latestVersionNumber}</TableCell>
                   <TableCell>{doc.fileVersionCount}</TableCell>
                   <TableCell>
-                    <Tooltip title="View Versions">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleViewVersions(doc.id)}
-                        sx={{ mr: 1 }}
-                      >
-                        <Visibility />
-                      </Button>
-                    </Tooltip>
                     <Tooltip title="Download Latest">
                       <Button
                         variant="contained"
-                        color="secondary"
+                        color="primary"
                         onClick={() => handleDownloadLatest(doc.fileName)}
                       >
                         <Download />
