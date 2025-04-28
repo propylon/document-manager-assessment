@@ -1,6 +1,8 @@
 import logging
+import os
 from hashlib import sha256
 
+from django.conf import settings
 from django.db import transaction, IntegrityError
 from django.db.models import F, Value, CharField, Window, Count
 from django.db.models.functions import Concat
@@ -95,22 +97,31 @@ class FileVersionViewSet(ModelViewSet):
     def get_document_revision(self, request, file_name):
         version = request.query_params.get('revision')
         try:
-            qs = FileVersion.objects.filter(
-                document__file_name=file_name,
-                owner=request.user
-            ).order_by(
-                '-version_number'
-            )
             if version:
-                qs = qs.filter(version_number=version)
+                qs = FileVersion.objects.filter(
+                    document__file_name=file_name,
+                    owner=request.user,
+                    version_number=version
+                ).values(
+                    'content',
+                    file_name=F('document__file_name')
+                )
+            else:
+                qs = Document.objects.filter(
+                    file_name=file_name,
+                    owner=request.user
+                ).values(
+                    'file_name',
+                    content=F('path')
+                )
+            rev = qs.first()
 
-            rev = qs[:1].get()
             if not rev:
                 return Response(StatusCode.get_response(400))
         except (ValueError, FileVersion.DoesNotExist):
             return Response(StatusCode.get_response(400))
-
-        return FileResponse(rev.content, as_attachment=True, filename=file_name)
+        tmp_file = open(os.path.join(settings.MEDIA_ROOT, rev['content']), 'rb')
+        return FileResponse(tmp_file, as_attachment=True, filename=file_name)
 
 
 class DocumentViewSet(ModelViewSet):

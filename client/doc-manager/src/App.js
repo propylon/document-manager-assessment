@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import AppRoutes from "./Routes";
 
 import { Link } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Box, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { UploadFile, Folder, Logout , Person} from "@mui/icons-material"; // Import icons
 import { Divider } from "@mui/material"; // Import Divider
@@ -13,12 +13,14 @@ import { fetchWithRefresh } from "./utils/FetchWithRefresh"; // Import the fetch
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
   const theme = useTheme();
   const [error, setError] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = (email) => {
     setIsLoggedIn(true);
+    setUserEmail(email);
   };
 
   const handleLogout = async () => {
@@ -81,13 +83,15 @@ function App() {
                 flexItem
                 sx={{ mx: 2, borderColor: theme.palette.divider }} // Add spacing and color
               />
-              <Button
-                color="inherit"
-                onClick={handleLogout}
-                startIcon={<Logout />}
-              >
-                Logout
-              </Button>
+              <Tooltip title="Logout">
+                <Button
+                  color="inherit"
+                  onClick={handleLogout}
+                  startIcon={<Logout />}
+                >
+                  {userEmail}
+                </Button>
+              </Tooltip>
             </>
           ) : (
             <Button

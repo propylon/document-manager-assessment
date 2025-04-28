@@ -46,7 +46,7 @@ function Login({ onLogin }) {
       // localStorage.setItem("authToken", data.token);
 
       // Notify parent component about successful login
-      onLogin();
+      onLogin(data.user);
       navigate("/upload-file"); 
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");

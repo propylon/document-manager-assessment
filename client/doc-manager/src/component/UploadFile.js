@@ -163,7 +163,7 @@ function UploadAndDocumentList() {
               InputLabelProps={{ shrink: true }}
               sx={{ flex: 1, mr: 2 }} // Add margin-right to create space between the input and button
             />
-            <Tooltip title="Upload File">
+            <Tooltip title="Upload File" arrow>
               <Button 
                 type="submit" 
                 variant="contained" 
@@ -206,7 +206,7 @@ function UploadAndDocumentList() {
                   }}
                 >
                   <TableCell>
-                    <Tooltip title="View Versions">
+                    <Tooltip title="View Versions" arrow>
                       <a
                         href="#"
                         onClick={(e) => {
@@ -222,7 +222,7 @@ function UploadAndDocumentList() {
                   <TableCell>{doc.latestVersionNumber}</TableCell>
                   <TableCell>{doc.fileVersionCount}</TableCell>
                   <TableCell>
-                    <Tooltip title="Download Latest">
+                    <Tooltip title="Download Latest" arrow>
                       <Button
                         variant="contained"
                         color="primary"
