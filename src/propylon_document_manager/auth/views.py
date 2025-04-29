@@ -12,6 +12,13 @@ logger = logging.getLogger(__name__)
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
+        '''
+        Removes the refresh token and access token from the response and sets it in the cookie
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
         response = super().post(request, *args, **kwargs)
 
         response.data.update({'user': request.data.get('email')} | StatusCode.get_response(200))
@@ -40,7 +47,14 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class CustomTokenRefreshView(TokenRefreshView):
     permission_classes = []
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> Response:
+        '''
+        Based on the refresh token, it generates a new access token and sets it in the cookie
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
         refresh_token = request.COOKIES.get("refresh_token")
         if not refresh_token:
             return Response(StatusCode.get_response(401))
@@ -64,7 +78,14 @@ class CustomTokenRefreshView(TokenRefreshView):
 
 
 class LogoutView(APIView):
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> Response:
+        '''
+        Logout the user by deleting the access and refresh tokens from the cookies.
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
         response = Response(StatusCode.get_response(202))
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")

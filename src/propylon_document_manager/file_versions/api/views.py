@@ -4,15 +4,13 @@ from hashlib import sha256
 
 from django.conf import settings
 from django.db import IntegrityError, transaction
-from django.db.models import CharField, Count, F, Value, Window
+from django.db.models import CharField, Count, F, Value
 from django.db.models.functions import Concat
 from django.http import FileResponse
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from ...utils.status_code import StatusCode
 from ..models import Document, FileVersion, User
@@ -40,7 +38,14 @@ class FileVersionViewSet(ModelViewSet):
             full_path=Concat(Value('storage/'), F('content'), output_field=CharField())
         )
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args, **kwargs) -> Response:
+        '''
+        Uploads a new revision of the document.
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             res = self.upload_revision(request.user, serializer.validated_data['content'])
@@ -48,7 +53,16 @@ class FileVersionViewSet(ModelViewSet):
         return Response(StatusCode.get_response(500))
 
     @staticmethod
-    def upload_revision(user, file):
+    def upload_revision(user, file) -> dict:
+        '''
+        Uploads a new revision of the document.
+        to verify if the file is already uploaded by user, application uses the hash of the file
+        if the file is already uploaded, but content varies then it creates a new revision
+        and updates the document's latest revision number in document table along with file_path
+        :param user:
+        :param file:
+        :return:
+        '''
         try:
             with transaction.atomic():
                 doc, doc_created = Document.objects.get_or_create(
@@ -77,6 +91,7 @@ class FileVersionViewSet(ModelViewSet):
                     doc.latest_version_number = revision_no
                     doc.path = file_version.content.name
                     doc.save()
+                logger.info(f'Document {file.name} uploaded successfully for user: {user.pk}')
 
         except IntegrityError as e:
             logger.error(f"Integrity error occurred: {e}")
@@ -93,7 +108,17 @@ class FileVersionViewSet(ModelViewSet):
         methods=['get'],
         url_path=r'(?P<file_name>[^/]+)'
     )
-    def get_document_revision(self, request, file_name):
+    def get_document_revision(self, request: Request, file_name: str) -> FileResponse | Response:
+        '''
+        returns the document based on user,
+        if no revision specified it returns the latest version
+        note: latest version is updated in document table once new document is uploaded, to avoid extra query
+
+        if version specified application looks for the version in file_version table
+        :param request:
+        :param file_name:
+        :return:
+        '''
         version = request.query_params.get('revision')
         try:
             if version:
@@ -118,6 +143,9 @@ class FileVersionViewSet(ModelViewSet):
             if not rev:
                 return Response(StatusCode.get_response(400))
         except (ValueError, FileVersion.DoesNotExist):
+            logger.exception(
+                f'Exception raised while downloading file={file_name}, version={version} for user={request.user.pk}'
+            )
             return Response(StatusCode.get_response(400))
         tmp_file = open(os.path.join(settings.MEDIA_ROOT, rev['content']), 'rb')
         return FileResponse(tmp_file, as_attachment=True, filename=file_name)
@@ -126,7 +154,14 @@ class FileVersionViewSet(ModelViewSet):
 class DocumentViewSet(ModelViewSet):
     serializer_class = DocumentSerializer
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args, **kwargs) -> Response:
+        '''
+        :return the list of unique documents for the user
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
         data = Document.objects.filter(
             owner=self.request.user
         ).values(
