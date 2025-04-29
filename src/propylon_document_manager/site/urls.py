@@ -6,7 +6,11 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 
-from propylon_document_manager.auth.views import CustomTokenObtainPairView, CustomTokenRefreshView, LogoutView
+from propylon_document_manager.auth.views import (
+    CustomTokenObtainPairView,
+    CustomTokenRefreshView,
+    LogoutView,
+)
 
 # API URLS
 urlpatterns = [

@@ -3,21 +3,20 @@ import os
 from hashlib import sha256
 
 from django.conf import settings
-from django.db import transaction, IntegrityError
-from django.db.models import F, Value, CharField, Window, Count
+from django.db import IntegrityError, transaction
+from django.db.models import CharField, Count, F, Value, Window
 from django.db.models.functions import Concat
 from django.http import FileResponse
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from ..models import FileVersion, Document, User
-from .serializers import FileVersionSerializer, DocumentSerializer
 from ...utils.status_code import StatusCode
+from ..models import Document, FileVersion, User
+from .serializers import DocumentSerializer, FileVersionSerializer
 
 logger = logging.getLogger(__name__)
 

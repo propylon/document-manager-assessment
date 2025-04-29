@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import FileVersion, Document
+from ..models import Document, FileVersion
 
 
 class FileVersionSerializer(serializers.ModelSerializer):
