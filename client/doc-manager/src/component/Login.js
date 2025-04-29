@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import config from "../config"; // Import the config file
 import {
   Container,
@@ -70,7 +70,7 @@ function Login({ onLogin }) {
           width="100%"
         >
           <Typography variant="h4" component="h1" gutterBottom>
-            Login
+            Welcome Back
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>

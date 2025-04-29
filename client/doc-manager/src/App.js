@@ -2,9 +2,8 @@ import './App.css';
 import React, { useState } from "react";
 import AppRoutes from "./Routes";
 
-import { Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box, Tooltip } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, Link } from "react-router"; // Import useNavigate
 import { UploadFile, Folder, Logout , Person} from "@mui/icons-material"; // Import icons
 import { Divider } from "@mui/material"; // Import Divider
 import { useTheme } from "@mui/material/styles"; // Import useTheme
@@ -16,7 +15,6 @@ function App() {
   const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
   const theme = useTheme();
-  const [error, setError] = useState("");
 
   const handleLogin = (email) => {
     setIsLoggedIn(true);
@@ -36,10 +34,10 @@ function App() {
       if (response.status === 200 && responseData.responseCode === 202) {
         navigate("/login"); // Redirect to the login page
       } else {
-        setError(responseData.responseMessage || "Failed to logout.");
+        console.log(responseData.responseMessage || "Failed to logout.");
       }
     } catch (err) {
-      setError(err.message || "An error occurred during logout.");
+      console.log(err.message || "An error occurred during logout.");
     }
   };
 
@@ -98,9 +96,8 @@ function App() {
               color="inherit"
               component={Link}
               to="/login"
-              startIcon={<Person />} // Add Login icon
             >
-              Login
+            <Person />
             </Button>
           )}
         </Toolbar>

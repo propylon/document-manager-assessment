@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Routes, Navigate } from "react-router-dom";
+import {Route, Routes, Navigate } from "react-router";
 import Login from "./component/Login";
 import FileVersions from "./component/FileVersions";
 import UploadFile from "./component/UploadFile";

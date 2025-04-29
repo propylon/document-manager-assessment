@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Tooltip } from "@mui/material"; // Import Tooltip
 import { Download, Visibility } from "@mui/icons-material"; // Import icons
 import config from "../config";
