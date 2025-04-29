@@ -2,13 +2,7 @@
 
 The Propylon Document Management Technical Assessment is a simple (and incomplete) web application consisting of a basic API backend and a React based client.  This API/client can be used as a bootstrap to implement the specific features requested in the assessment description. 
 
-## Getting Started
-### API Development
-The API project is a [Django/DRF](https://www.django-rest-framework.org/) project that utilizes a [Makefile](https://www.gnu.org/software/make/manual/make.html) for a convenient interface to access development utilities. This application uses [SQLite](https://www.sqlite.org/index.html) as the default persistence database you are more than welcome to change this. This project requires Python 3.11 in order to create the virtual environment.  You will need to ensure that this version of Python is installed on your OS before building the virtual environment.  Running the below commmands should get the development environment running using the Django development server.
-1. `$ make build` to create the virtual environment.
-2. `$ make fixtures` to create a small number of fixture file versions.
-3. `$ make serve` to start the development server on port 8001.
-4. `$ make test` to run the limited test suite via PyTest.
+
 ### Client Development 
 The client project is a [Create React App](https://create-react-app.dev/) that has been tested against [Node v18.19.0 Hydrogen LTS](https://nodejs.org/download/release/v18.19.0/).  An [.nvmrc](https://github.com/nvm-sh/nvm#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) file has been included so that the command `$ nvm use` should select the correct NodeJS version through NVM.
 1. Navigate to the client/doc-manager directory.
@@ -37,6 +31,12 @@ The Propylon Document Management Technical Assessment is a simple (and incomplet
 Current Application stores files at local followed by storage/user_{user_id}/{file_name} and uses a simple versioning system.
 This functionality can be extended to support cloud storage solutions such as Amazon S3 or Google Cloud Storage (GCP Bucket).
 The application allows users to upload, download, and manage documents with version control.
+
+## Prerequisites
+Create virtual environment with python 3.11 and install dependencies by following command
+```bash
+  pip install -r requirements/dev.txt
+```
 
 ## Frontend URL
 The React frontend is accessible at:
@@ -165,9 +165,6 @@ The API uses **JWT (JSON Web Token)** for authentication. To access protected en
 
 
 ## Notes
-- Ensure the backend is running on `http://localhost:8001` and the frontend on `http://localhost:3000`.
+- Ensure the backend is running on `http://localhost:9092` and the frontend on `http://localhost:3000`.
 - Use HTTPS for secure communication in production environments.
 ```
-
-##
-[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
