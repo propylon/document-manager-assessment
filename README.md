@@ -28,15 +28,20 @@ use django_extension to run the server with ssl
 The Propylon Document Management Technical Assessment is a simple (and incomplete) web application consisting of a basic API backend and a React-based client. This document outlines the available APIs, their authentication methods, and the frontend URL.
 
 ## Application Overview
-Current Application stores files at local followed by storage/user_{user_id}/{file_name} and uses a simple versioning system.
+Current Application stores files at local followed by 
+
+```storage/user_{user_id}/{file_name} ```
+
+and uses a simple versioning system.
 This functionality can be extended to support cloud storage solutions such as Amazon S3 or Google Cloud Storage (GCP Bucket).
 The application allows users to upload, download, and manage documents with version control.
 
 ## Prerequisites
-Create virtual environment with python 3.11 and install dependencies by following command
-```bash
-  pip install -r requirements/dev.txt
-```
+- Create virtual environment with python 3.11 and install dependencies by following command
+    ```bash
+      pip install -r requirements/dev.txt
+    ```
+- Allow third party cookie in your browser for local development
 
 ## Frontend URL
 The React frontend is accessible at:
