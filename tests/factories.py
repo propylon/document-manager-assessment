@@ -2,8 +2,11 @@ from collections.abc import Sequence
 from typing import Any
 
 from django.contrib.auth import get_user_model
-from factory import Faker, post_generation
+from django.core.files.uploadedfile import SimpleUploadedFile
+from factory import Faker, post_generation, SubFactory
 from factory.django import DjangoModelFactory
+
+from propylon_document_manager.file_versions.models import Document, FileVersion
 
 
 class UserFactory(DjangoModelFactory):
@@ -29,3 +32,22 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         model = get_user_model()
         django_get_or_create = ["email"]
+
+
+class DocumentFactory(DjangoModelFactory):
+    class Meta:
+        model = Document
+
+    file_name = Faker("file_name")
+    owner = SubFactory(UserFactory)
+    latest_version_number = 1
+
+
+class FileVersionFactory(DjangoModelFactory):
+    class Meta:
+        model = FileVersion
+
+    document = SubFactory(DocumentFactory)
+    version_number = Faker("random_int", min=1, max=100)
+    owner = SubFactory(UserFactory)
+    content = SimpleUploadedFile("test_file.txt", b"Test content")
