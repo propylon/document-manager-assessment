@@ -40,6 +40,9 @@ The application allows users to upload, download, and manage documents with vers
 - Create virtual environment with python 3.11 and install dependencies by following command
     ```bash
       pip install -r requirements/dev.txt
+      python manage.py makemigrations
+      python manage.py migrate
+      python manage.py createsuperuser -- Create a superuser account to access the admin panel.
     ```
 - Allow third party cookie in your browser for local development
 
