@@ -278,3 +278,12 @@ propylon_document_manager/media/
 
 ### DB
 *.sqlite*
+
+### IDE
+.idea/
+
+### Client-specific
+client/node_modules/
+
+### Uploaded files
+uploaded_files/uploads/*
