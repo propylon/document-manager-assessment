@@ -4,8 +4,10 @@ This folder is reserved for the React (TypeScript) frontend implementation.
 
 ## Requirements
 
-- Use **React** with **TypeScript**
-- Use **Material UI** for the UI
+- **Framework:** Use **React** with **TypeScript**
+- **Language:** TypeScript
+- **UI Library:** Material UI (MUI)
+- **Bundler:** Vite (preferred)
 - Use the technologies and implement the features as specified in the assessment brief
 
 ## Notes
