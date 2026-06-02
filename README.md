@@ -24,6 +24,19 @@ The API project is a [Django/DRF](https://www.django-rest-framework.org/) projec
 2. `$ make fixtures` to create a small number of fixture file versions.
 3. `$ make serve` to start the development server on port 8001.
 4. `$ make test` to run the limited test suite via PyTest.
+5. **Creating a Superuser:**
+   To access authenticated endpoints, you will need to create a superuser. Because the project uses a custom user model (which authenticates using `email` instead of `username`) and a non-standard settings directory, you must configure the settings module when running the command:
+   * **PowerShell:**
+     ```powershell
+     $env:DJANGO_SETTINGS_MODULE="propylon_document_manager.site.settings.local"
+     python manage.py createsuperuser
+     ```
+   * **Bash (Linux/macOS/Git Bash/WSL):**
+     ```bash
+     export DJANGO_SETTINGS_MODULE=propylon_document_manager.site.settings.local
+     python manage.py createsuperuser
+     ```
+
 ### Client Development 
 See the Readme [here](https://github.com/propylon/document-manager-assessment/blob/main/client/doc-manager/README.md)
 
