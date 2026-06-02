@@ -55,6 +55,23 @@ class User(AbstractUser):
         return reverse("users:detail", kwargs={"pk": self.id})
 
 
+class Document(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
+    url_path = models.CharField(max_length=1024)  # user-specified storage URL
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'url_path')
+
+
 class FileVersion(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='versions', null=True, blank=True)
     file_name = models.fields.CharField(max_length=512)
     version_number = models.fields.IntegerField()
+    file = models.FileField(upload_to='documents/', null=True, blank=True)
+    content_hash = models.CharField(max_length=64, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('document', 'version_number')
+        ordering = ['-version_number']
