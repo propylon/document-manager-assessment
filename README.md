@@ -3,6 +3,21 @@
 The Propylon Document Management Technical Assessment is a simple (and incomplete) web application consisting of a basic API backend and a React based client.  This API/client can be used as a bootstrap to implement the specific features requested in the assessment description. 
 
 ## Getting Started
+### Prerequisites (WSL / Ubuntu)
+1. Update system and install base build tools
+```sh
+sudo apt update && sudo apt upgrade -y
+sudo apt install build-essential software-properties-common -y
+```
+2. Add the Deadsnakes PPA for Python 3.11
+```sh
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt update
+```
+3. Install Python 3.11 and required environment tools
+```sh
+sudo apt install python3.11 python3.11-dev python3.11-venv virtualenv -y
+```
 ### API Development
 The API project is a [Django/DRF](https://www.django-rest-framework.org/) project that utilizes a [Makefile](https://www.gnu.org/software/make/manual/make.html) for a convenient interface to access development utilities. This application uses [SQLite](https://www.sqlite.org/index.html) as the default persistence database you are more than welcome to change this. This project requires Python 3.11 in order to create the virtual environment.  You will need to ensure that this version of Python is installed on your OS before building the virtual environment.  Running the below commmands should get the development environment running using the Django development server.
 1. `$ make build` to create the virtual environment.
