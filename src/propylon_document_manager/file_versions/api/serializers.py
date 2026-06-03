@@ -7,6 +7,7 @@ from ..models import Document, FileVersion
 class FileVersionSerializer(serializers.ModelSerializer):
     url_path = serializers.CharField(write_only=True, required=False)
     file_name = serializers.CharField(required=False)
+    document_path = serializers.CharField(source="document.url_path", read_only=True)
 
     class Meta:
         model = FileVersion
@@ -19,6 +20,7 @@ class FileVersionSerializer(serializers.ModelSerializer):
             "content_hash",
             "created_at",
             "url_path",
+            "document_path",
         ]
         read_only_fields = [
             "id",
@@ -26,6 +28,7 @@ class FileVersionSerializer(serializers.ModelSerializer):
             "version_number",
             "content_hash",
             "created_at",
+            "document_path",
         ]
 
     def create(self, validated_data):
