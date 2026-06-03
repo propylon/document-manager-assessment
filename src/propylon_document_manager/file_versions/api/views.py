@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, DestroyModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,7 +26,7 @@ class FileVersionPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
+class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, DestroyModelMixin, GenericViewSet):
     serializer_class = FileVersionSerializer
     lookup_field = "id"
     pagination_class = FileVersionPagination
@@ -171,3 +171,13 @@ class DocumentStorageView(APIView):
 
         serializer = FileVersionSerializer(file_version, context={"request": request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, url_path):
+        """Delete an entire document and all its versions."""
+        document = get_object_or_404(
+            Document,
+            user=request.user,
+            url_path=url_path,
+        )
+        document.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
