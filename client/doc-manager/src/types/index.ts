@@ -18,4 +18,5 @@ export interface FileVersionData {
   file: string;
   content_hash: string;
   created_at: string;
+  document_path: string;
 }
