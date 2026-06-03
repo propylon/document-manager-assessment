@@ -81,3 +81,18 @@ export const getVersions = async (documentId: number): Promise<FileVersionData[]
   });
   return response.data;
 };
+
+/**
+ * Delete a specific file version.
+ */
+export const deleteFileVersion = async (id: number): Promise<void> => {
+  await client.delete(`/api/file_versions/${id}/`);
+};
+
+/**
+ * Delete a document and all its versions by its logical urlPath.
+ */
+export const deleteDocument = async (urlPath: string): Promise<void> => {
+  const cleanPath = urlPath.startsWith("/") ? urlPath : `/${urlPath}`;
+  await client.delete(`/documents${cleanPath}`);
+};
