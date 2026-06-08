@@ -1,35 +1,8 @@
-PIP_REPO_URL := $(shell pip3.11 config get install.find-links 2> /dev/null)
 
-PYTHON=python3.11
-ENV_DIR=.env_$(PYTHON)
-PROJECT_FOLDERS=src tests
-VERBOSITY ?= 1
-
-export PYTHONPATH=.
+export PYTHONPATH=src
 export DJANGO_SETTINGS_MODULE=propylon_document_manager.site.settings.local
 
-ifeq ($(OS),Windows_NT)
-	IN_ENV=. $(ENV_DIR)/Scripts/activate &&
-else
-	IN_ENV=. $(ENV_DIR)/bin/activate &&
-endif
-
-# ======================
-# Environment management
-# ======================
-$(ENV_DIR):
-	virtualenv -p $(PYTHON) $(ENV_DIR)
-	@printf "[install]\nfind-links=$(PIP_REPO_URL)\n" > $(ENV_DIR)/pip.conf
-
-print-install-message:
-	@printf "Environment installed at $(ENV_DIR), run the following command to activate it: \nsource $(ENV_DIR)/bin/activate\n"
-
-env: $(ENV_DIR) print-install-message
-
-requirements: requirements/main.txt requirements/dev.txt build-reqs
-
-env_update: $(ENV_DIR) requirements
-	$(IN_ENV) pip install -U -r requirements/dev.txt
+IN_ENV = uv run
 
 # ======================
 # Testing and Linting
@@ -65,11 +38,8 @@ shell:
 collectstatic:
 	$(IN_ENV) django-admin collectstatic
 
-build-reqs: env
-	$(IN_ENV) pip install -r requirements/dev.txt
-
-build: build-reqs
-	$(IN_ENV) pip install -e .
+build:
+	uv sync --locked
 
 plain-serve:
 	$(IN_ENV) django-admin runserver 0.0.0.0:8001
