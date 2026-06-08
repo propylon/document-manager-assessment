@@ -1,3 +1,23 @@
+
+[project]
+name = "propylon_document_manager"
+version = "0.1.0"
+description = "Document Management Assessment"
+readme = "README.md"
+requires-python = "==3.13.13"
+dependencies = [
+    "argon2-cffi>=25.1.0",
+    "django>=6.0.6",
+    "django-cors-headers>=4.9.0",
+    "django-environ>=0.13.0",
+    "django-model-utils>=5.0.0",
+    "djangorestframework>=3.17.1",
+    "pillow>=12.2.0",
+    "python-slugify>=8.0.4",
+    "whitenoise>=6.12.0",
+]
+
+
 # ==== pytest ====
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -21,7 +41,7 @@ plugins = ["django_coverage_plugin"]
 # ==== black ====
 [tool.black]
 line-length = 119
-target-version = ['py311']
+target-version = ['py313']
 
 
 # ==== isort ====
@@ -32,13 +52,13 @@ known_first_party = [
     "propylon_document_manager",
     "config",
 ]
-skip = ["venv/"]
+skip = [".venv/"]
 skip_glob = ["**/migrations/*.py"]
 
 
 # ==== mypy ====
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.13"
 check_untyped_defs = true
 ignore_missing_imports = true
 warn_unused_ignores = true
@@ -85,4 +105,27 @@ generated-members = [
     "[a-zA-Z]+_set{1,2}",
     "save",
     "delete",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.5.1",
+    "coverage>=7.14.1",
+    "django-coverage-plugin>=3.2.2",
+    "django-debug-toolbar>=6.3.0",
+    "django-extensions>=4.1",
+    "django-stubs>=6.0.5",
+    "djangorestframework-stubs>=3.17.0",
+    "factory-boy>=3.3.3",
+    "flake8>=7.3.0",
+    "flake8-isort>=7.0.0",
+    "ipdb>=0.13.13",
+    "mypy>=2.1.0",
+    "pre-commit>=4.6.0",
+    "psycopg2-binary>=2.9.12",
+    "pylint-django>=2.7.0",
+    "pytest>=9.0.3",
+    "pytest-django>=4.12.0",
+    "pytest-sugar>=1.1.1",
+    "ruff>=0.15.16",
 ]
