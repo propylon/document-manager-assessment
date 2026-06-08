@@ -12,7 +12,7 @@ This project requires Python 3.13 in order to create the virtual environment.  Y
     curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```
-Running the below commmands should get the development environment running using the Django development server.
+Running the below commands should get the development environment running using the Django development server.
 1. `$ make build` to create the virtual environment.
 2. `$ make fixtures` to create a small number of fixture file versions.
 3. `$ make serve` to start the development server on port 8001.
