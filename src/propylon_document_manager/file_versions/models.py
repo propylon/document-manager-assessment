@@ -1,8 +1,9 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
 
 class User(AbstractUser):
     """
@@ -32,5 +33,23 @@ class User(AbstractUser):
 
 
 class FileVersion(models.Model):
-    file_name = models.fields.CharField(max_length=512)
-    version_number = models.fields.IntegerField()
+    file = models.FileField(upload_to="uploads/%Y/%m/%d", blank=True, null=True)
+    file_name = models.CharField(max_length=512)
+    version_number = models.PositiveIntegerField(default=1)
+    content_type = models.CharField(max_length=255, blank=True, default="")
+    file_size = models.PositiveIntegerField(default=0)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-uploaded_at", "-version_number"]
+
+    def save(self, *args, **kwargs):
+        if self._state.adding and not self.version_number:
+            latest_version = (
+                FileVersion.objects.filter(file_name=self.file_name).order_by("-version_number").first()
+            )
+            self.version_number = (latest_version.version_number if latest_version else 0) + 1
+        super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return self.file_name or self.file.name or "Untitled file"
