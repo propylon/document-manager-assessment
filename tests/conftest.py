@@ -1,3 +1,10 @@
+import os
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.settings")
+
+import django
+django.setup()
+
 import pytest
 
 from propylon_document_manager.file_versions.models import User

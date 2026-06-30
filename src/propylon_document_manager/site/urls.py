@@ -5,9 +5,12 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
+from propylon_document_manager.file_versions.api.views import DocumentView
 
 # API URLS
 urlpatterns = [
+    path("api/documents/<path:url_path>", DocumentView.as_view()),
+    path("api/documents/<path:url_path>/", DocumentView.as_view()),
     # API base url
     path("api/", include("propylon_document_manager.site.api_router")),
     # DRF auth token

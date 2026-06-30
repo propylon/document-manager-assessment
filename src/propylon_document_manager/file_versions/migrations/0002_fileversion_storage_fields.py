@@ -10,6 +10,11 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="fileversion",
+            name="url_path",
+            field=models.CharField(blank=True, default="", db_index=True, max_length=1024),
+        ),
+        migrations.AddField(
+            model_name="fileversion",
             name="content_type",
             field=models.CharField(blank=True, default="", max_length=255),
         ),
