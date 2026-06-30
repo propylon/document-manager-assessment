@@ -5,10 +5,12 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
-from propylon_document_manager.file_versions.api.views import DocumentMetadataView, DocumentView
+from propylon_document_manager.file_versions.api.views import CASDocumentView, DocumentMetadataView, DocumentView
 
 # API URLS
 urlpatterns = [
+    path("api/cas/<str:content_hash>", CASDocumentView.as_view()),
+    path("api/cas/<str:content_hash>/", CASDocumentView.as_view()),
     path("api/documents/<path:url_path>/metadata", DocumentMetadataView.as_view()),
     path("api/documents/<path:url_path>/metadata/", DocumentMetadataView.as_view()),
     path("api/documents/<path:url_path>", DocumentView.as_view()),
