@@ -86,3 +86,26 @@ def test_file_versions_api_retrieves_specific_revision_by_query_param():
     response = client.get("/api/documents/reviews/review.pdf?revision=1")
     assert response.status_code == 200
     assert b"".join(response.streaming_content) == b"second-version"
+
+
+def test_document_metadata_endpoint_returns_json_for_latest_and_revision():
+    client = APIClient()
+    client.post(
+        "/api/documents/reviews/review.pdf",
+        {"file": SimpleUploadedFile("review.pdf", b"first-version", content_type="application/pdf")},
+        format="multipart",
+    )
+    client.post(
+        "/api/documents/reviews/review.pdf",
+        {"file": SimpleUploadedFile("review.pdf", b"second-version", content_type="application/pdf")},
+        format="multipart",
+    )
+
+    latest = client.get("/api/documents/reviews/review.pdf/metadata")
+    assert latest.status_code == 200
+    assert latest.data["url_path"] == "reviews/review.pdf"
+    assert latest.data["version_number"] == 2
+
+    revision_zero = client.get("/api/documents/reviews/review.pdf/metadata?revision=0")
+    assert revision_zero.status_code == 200
+    assert revision_zero.data["version_number"] == 1

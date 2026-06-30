@@ -67,6 +67,36 @@ class DocumentView(APIView):
         if not file_version.file:
             raise Http404("File not found.")
 
-        response = FileResponse(file_version.file.open("rb"), content_type=file_version.content_type or "application/octet-stream")
-        response["Content-Disposition"] = f'attachment; filename="{file_version.file_name}"'
-        return response
+        return FileResponse(
+            file_version.file.open("rb"),
+            content_type=file_version.content_type or "application/octet-stream",
+            as_attachment=True,
+            filename=file_version.file_name,
+        )
+
+
+class DocumentMetadataView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, url_path):
+        url_path = url_path.strip("/")
+        versions = FileVersion.objects.filter(url_path=url_path).order_by("version_number")
+        if not versions.exists():
+            raise Http404("Document not found.")
+
+        revision = request.query_params.get("revision")
+        if revision is not None:
+            try:
+                revision_index = int(revision)
+            except ValueError:
+                return Response({"detail": "Invalid revision."}, status=status.HTTP_400_BAD_REQUEST)
+
+            if revision_index < 0 or revision_index >= versions.count():
+                raise Http404("Revision not found.")
+            file_version = versions[revision_index]
+        else:
+            file_version = versions.last()
+
+        serializer = FileVersionSerializer(file_version, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
